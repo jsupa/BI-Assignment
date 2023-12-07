@@ -24,6 +24,17 @@ const upload = multer()
  *   responses:
  *    200:
  *     description: File uploaded
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         size:
+ *          type: integer
+ *          description: File size in bytes
+ *         hash:
+ *          type: string
+ *          description: File hash
  */
 
 router.post('/', upload.single('file'), fileController.create)
