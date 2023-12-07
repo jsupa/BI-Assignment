@@ -13,3 +13,5 @@ $ docker-compose up
 $ NODE_ENV=production pnpm i
 $ pnpm start
 ```
+
+Server will be running on http://localhost:3000/api-docs
