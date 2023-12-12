@@ -9,7 +9,7 @@ const File = sequelize.define('File', {
     unique: true
   },
   size: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
     allowNull: false
   }
 })

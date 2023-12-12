@@ -1,19 +1,40 @@
 const crypto = require('crypto')
 const File = require('../models/file.model')
+const busboy = require('busboy')
 
 const controller = {}
 
-controller.create = async (req, res, next) => {
+controller.crete = async (req, res, next) => {
+  const newFile = new File({ hash: '', size: 0 })
+  const sha1 = crypto.createHash('sha1')
+  const bb = busboy({ headers: req.headers })
+
+  bb.on('file', (_name, file, _info) => {
+    file.on('data', data => {
+      newFile.size += data.length
+      sha1.update(data)
+    })
+
+    file.on('end', () => {
+      newFile.hash = sha1.digest('hex')
+    })
+  })
+
+  bb.on('finish', async () => {
+    try {
+      await newFile.save()
+      res.json({ size: newFile.size, hash: newFile.hash })
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  bb.on('error', error => {
+    next(error)
+  })
+
   try {
-    if (!req.file) throw new Error('File is required')
-
-    const { size } = req.file
-
-    const hash = crypto.createHash('sha1').update(req.file.buffer).digest('hex')
-
-    const file = await File.create({ size, hash })
-
-    res.json({ size: file.size, hash: file.hash })
+    req.pipe(bb)
   } catch (err) {
     next(err)
   }

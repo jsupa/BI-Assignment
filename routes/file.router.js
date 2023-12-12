@@ -1,10 +1,8 @@
 const { Router } = require('express')
-const multer = require('multer')
 
 const fileController = require('../controllers/file.controller')
 
 const router = Router()
-const upload = multer()
 
 /**
  * @openapi
@@ -37,6 +35,6 @@ const upload = multer()
  *          description: File hash
  */
 
-router.post('/', upload.single('file'), fileController.create)
+router.post('/', fileController.crete)
 
 module.exports = router
